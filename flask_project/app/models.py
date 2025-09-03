@@ -51,7 +51,7 @@ class Brand(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     company = db.relationship('Company', backref='brands')
 
-# Категории товаров с иерархической структурой
+# Категории товаров
 class ProductCategory(db.Model):
     __tablename__ = "product_category"
     id = db.Column(db.Integer, primary_key=True)
@@ -68,8 +68,8 @@ class Product(db.Model):
     slug = db.Column(db.String(250), unique=True, nullable=False)
     description = db.Column(db.Text)
     volume_or_weight = db.Column(db.String(50))
-    image = db.Column(db.String(250))
-    additional_images = db.Column(db.JSON)
+    image = db.Column(db.String(250))  # главное изображение
+    additional_images = db.Column(db.JSON, default=[])  # список картинок
     packaging_details = db.Column(db.Text)
     category_id = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=False)
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)

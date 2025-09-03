@@ -1,10 +1,13 @@
 from flask import Flask
 from .models import db, AdminUser
-from .admin import create_admin, login_manager
+from .admin import create_admin  # убрали login_manager
 from .routes.auth import auth_bp
 from flask_babel import Babel
+from .routes.api import api_bp
+from flask_login import LoginManager
 
 babel = Babel()
+login_manager = LoginManager()  # теперь здесь
 
 def create_app():
     app = Flask(__name__)
@@ -25,6 +28,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-
+    
     babel.init_app(app)
+    app.register_blueprint(api_bp, url_prefix="/api")
     return app
