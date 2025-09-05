@@ -5,9 +5,11 @@ from .routes.auth import auth_bp
 from flask_babel import Babel
 from .routes.api import api_bp
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 babel = Babel()
 login_manager = LoginManager()  # теперь здесь
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +18,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     # user_loader для Flask-Login

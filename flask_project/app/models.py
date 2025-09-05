@@ -22,21 +22,33 @@ class AdminUser(UserMixin, db.Model):
 class Company(db.Model):
     __tablename__ = "company"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
-    mission = db.Column(db.Text)
-    vision = db.Column(db.Text)
+    name_en = db.Column(db.String(250), nullable=True)
+    name_ru = db.Column(db.String(250), nullable=True)
+    name_tk = db.Column(db.String(250), nullable=True)
+    mission_en = db.Column(db.Text)
+    mission_ru = db.Column(db.Text)
+    mission_tk = db.Column(db.Text)
+    vision_en = db.Column(db.Text)
+    vision_ru = db.Column(db.Text)
+    vision_tk = db.Column(db.Text)
     phone = db.Column(db.String(50))
     email = db.Column(db.String(120))
-    address = db.Column(db.Text)
+    address_en = db.Column(db.Text)
+    address_ru = db.Column(db.Text)
+    address_tk = db.Column(db.Text)
     map_coordinates = db.Column(db.String(100))
 
 # Сертификаты
 class Certificate(db.Model):
     __tablename__ = "certificate"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name_en = db.Column(db.String(250), nullable=False)
+    name_ru = db.Column(db.String(250), nullable=False)
+    name_tk = db.Column(db.String(250), nullable=False)
     image = db.Column(db.String(250))
-    description = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    description_tk = db.Column(db.Text)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     company = db.relationship('Company', backref='certificates')
 
@@ -44,9 +56,13 @@ class Certificate(db.Model):
 class Brand(db.Model):
     __tablename__ = "brand"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    name_en = db.Column(db.String(120), nullable=False)
+    name_ru = db.Column(db.String(120), nullable=False)
+    name_tk = db.Column(db.String(120), nullable=False)
     logo_image = db.Column(db.String(250))
-    description = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    description_tk = db.Column(db.Text)
     slug = db.Column(db.String(120), unique=True, nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     company = db.relationship('Company', backref='brands')
@@ -55,8 +71,13 @@ class Brand(db.Model):
 class ProductCategory(db.Model):
     __tablename__ = "product_category"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    name_en = db.Column(db.String(120), nullable=False)
+    name_ru = db.Column(db.String(120), nullable=False)
+    name_tk = db.Column(db.String(120), nullable=False)
     slug = db.Column(db.String(120), unique=True, nullable=False)
+    description_en = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    description_tk = db.Column(db.Text)
     parent_category_id = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=True)
     parent = db.relationship('ProductCategory', remote_side=[id], backref='subcategories')
 
@@ -64,13 +85,19 @@ class ProductCategory(db.Model):
 class Product(db.Model):
     __tablename__ = "product"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name_en = db.Column(db.String(250), nullable=False)
+    name_ru = db.Column(db.String(250), nullable=False)
+    name_tk = db.Column(db.String(250), nullable=False)
     slug = db.Column(db.String(250), unique=True, nullable=False)
-    description = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    description_tk = db.Column(db.Text)
     volume_or_weight = db.Column(db.String(50))
     image = db.Column(db.String(250))  # главное изображение
     additional_images = db.Column(db.JSON, default=[])  # список картинок
-    packaging_details = db.Column(db.Text)
+    packaging_details_en = db.Column(db.Text)
+    packaging_details_ru = db.Column(db.Text)
+    packaging_details_tk = db.Column(db.Text)
     category_id = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=False)
     brand_id = db.Column(db.Integer, db.ForeignKey('brand.id'), nullable=False)
     category = db.relationship('ProductCategory', backref='products')
@@ -92,11 +119,15 @@ news_brand_association = db.Table('news_brand',
 class News(db.Model):
     __tablename__ = "news"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(250), nullable=False)
+    title_en = db.Column(db.String(250), nullable=False)
+    title_ru = db.Column(db.String(250), nullable=False)
+    title_tk = db.Column(db.String(250), nullable=False)
     slug = db.Column(db.String(250), unique=True, nullable=False)
     publication_date = db.Column(db.Date, default=datetime.utcnow().date)
     image = db.Column(db.String(250))
-    body_text = db.Column(db.Text)
+    body_text_en = db.Column(db.Text)
+    body_text_ru = db.Column(db.Text)
+    body_text_tk = db.Column(db.Text)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     company = db.relationship('Company', backref='news')
     products = db.relationship('Product', secondary=news_product_association, backref='related_news')
@@ -108,7 +139,9 @@ class ContactMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-    message = db.Column(db.Text, nullable=False)
+    message_en = db.Column(db.Text, nullable=False)
+    message_ru = db.Column(db.Text, nullable=False)
+    message_tk = db.Column(db.Text, nullable=False)
     submission_date = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Подписчики рассылки
@@ -124,5 +157,9 @@ class Banner(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(250))
     link = db.Column(db.String(250))
-    title = db.Column(db.String(250))
-    description = db.Column(db.String(500))
+    title_en = db.Column(db.String(250))
+    title_ru = db.Column(db.String(250))
+    title_tk = db.Column(db.String(250))
+    description_en = db.Column(db.String(500))
+    description_ru = db.Column(db.String(500))
+    description_tk = db.Column(db.String(500))

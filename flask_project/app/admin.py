@@ -59,7 +59,22 @@ EDIT_TEMPLATE = "admin/edit.html"
 
 # --- Product Admin ---
 class ProductAdmin(SecureModelView):
-    form_overrides = {"description": TextAreaField}
+    form_columns = [
+        "name_en", "name_ru", "name_tk",
+        "slug",
+        "description_en", "description_ru", "description_tk",
+        "volume_or_weight", "image", "additional_images",
+        "packaging_details_en", "packaging_details_ru", "packaging_details_tk",
+        "category", "brand"
+    ]
+    form_overrides = {
+        "description_en": TextAreaField,
+        "description_ru": TextAreaField,
+        "description_tk": TextAreaField,
+        "packaging_details_en": TextAreaField,
+        "packaging_details_ru": TextAreaField,
+        "packaging_details_tk": TextAreaField,
+    }
     form_template = EDIT_TEMPLATE
     form_extra_fields = {
         "image": ImageUploadField(
@@ -70,14 +85,23 @@ class ProductAdmin(SecureModelView):
         ),
         "additional_images": MultiImageUploadField("Дополнительные изображения")
     }
-
     def on_model_change(self, form, model, is_created):
         if form.additional_images.data:
             model.additional_images = form.additional_images.data
 
 # --- Brand Admin ---
 class BrandAdmin(SecureModelView):
-    form_overrides = {"description": TextAreaField}
+    form_columns = [
+        "name_en", "name_ru", "name_tk",
+        "slug",
+        "description_en", "description_ru", "description_tk",
+        "logo_image", "company"
+    ]
+    form_overrides = {
+        "description_en": TextAreaField,
+        "description_ru": TextAreaField,
+        "description_tk": TextAreaField,
+    }
     form_template = EDIT_TEMPLATE
     form_extra_fields = {
         "logo_image": ImageUploadField(
@@ -90,7 +114,17 @@ class BrandAdmin(SecureModelView):
 
 # --- News Admin ---
 class NewsAdmin(SecureModelView):
-    form_overrides = {"body_text": TextAreaField}
+    form_columns = [
+        "title_en", "title_ru", "title_tk",
+        "slug",
+        "body_text_en", "body_text_ru", "body_text_tk",
+        "publication_date", "image", "company", "products", "brands"
+    ]
+    form_overrides = {
+        "body_text_en": TextAreaField,
+        "body_text_ru": TextAreaField,
+        "body_text_tk": TextAreaField,
+    }
     form_template = EDIT_TEMPLATE
     form_extra_fields = {
         "image": ImageUploadField(
@@ -103,7 +137,16 @@ class NewsAdmin(SecureModelView):
 
 # --- Certificate Admin ---
 class CertificateAdmin(SecureModelView):
-    form_overrides = {"description": TextAreaField}
+    form_columns = [
+        "name_en", "name_ru", "name_tk",
+        "description_en", "description_ru", "description_tk",
+        "image", "company"
+    ]
+    form_overrides = {
+        "description_en": TextAreaField,
+        "description_ru": TextAreaField,
+        "description_tk": TextAreaField,
+    }
     form_template = EDIT_TEMPLATE
     form_extra_fields = {
         "image": ImageUploadField(
@@ -116,9 +159,18 @@ class CertificateAdmin(SecureModelView):
 
 # --- Banner Admin ---
 class BannerAdmin(SecureModelView):
+    form_columns = [
+        "image", "link",
+        "title_en", "title_ru", "title_tk",
+        "description_en", "description_ru", "description_tk"
+    ]
     form_overrides = {
-        "title": TextAreaField,
-        "description": TextAreaField
+        "title_en": TextAreaField,
+        "title_ru": TextAreaField,
+        "title_tk": TextAreaField,
+        "description_en": TextAreaField,
+        "description_ru": TextAreaField,
+        "description_tk": TextAreaField,
     }
     form_template = EDIT_TEMPLATE
     form_extra_fields = {
@@ -132,12 +184,52 @@ class BannerAdmin(SecureModelView):
 
 # --- Company Admin ---
 class CompanyAdmin(SecureModelView):
+    form_columns = [
+        "name_en", "name_ru", "name_tk",
+        "mission_en", "mission_ru", "mission_tk",
+        "vision_en", "vision_ru", "vision_tk",
+        "phone", "email",
+        "address_en", "address_ru", "address_tk",
+        "map_coordinates"
+    ]
     form_overrides = {
-        "mission": TextAreaField,
-        "vision": TextAreaField,
-        "address": TextAreaField
+        "mission_en": TextAreaField,
+        "mission_ru": TextAreaField,
+        "mission_tk": TextAreaField,
+        "vision_en": TextAreaField,
+        "vision_ru": TextAreaField,
+        "vision_tk": TextAreaField,
+        "address_en": TextAreaField,
+        "address_ru": TextAreaField,
+        "address_tk": TextAreaField,
     }
     form_template = EDIT_TEMPLATE
+
+class ProductCategoryAdmin(SecureModelView):
+    form_columns = [
+        "name_en", "name_ru", "name_tk",
+        "slug",
+        "description_en", "description_ru", "description_tk",
+        "parent"
+    ]
+    form_overrides = {
+        "description_en": TextAreaField,
+        "description_ru": TextAreaField,
+        "description_tk": TextAreaField,
+    }
+    form_template = EDIT_TEMPLATE
+
+class ContactMessageAdmin(SecureModelView):
+    form_columns = [
+        "full_name", "email",
+        "message_en", "message_ru", "message_tk",
+        "submission_date"
+    ]
+    form_overrides = {
+        "message_en": TextAreaField,
+        "message_ru": TextAreaField,
+        "message_tk": TextAreaField,
+    }
 
 # --- Инициализация админки ---
 def create_admin(app):
@@ -149,12 +241,12 @@ def create_admin(app):
     )
     admin.add_view(CompanyAdmin(Company, db.session))
     admin.add_view(ProductAdmin(Product, db.session))
-    admin.add_view(SecureModelView(ProductCategory, db.session))
+    admin.add_view(ProductCategoryAdmin(ProductCategory, db.session))
     admin.add_view(BrandAdmin(Brand, db.session))
     admin.add_view(NewsAdmin(News, db.session))
     admin.add_view(CertificateAdmin(Certificate, db.session))
     admin.add_view(BannerAdmin(Banner, db.session))
-    admin.add_view(SecureModelView(ContactMessage, db.session))
+    admin.add_view(ContactMessageAdmin(ContactMessage, db.session))
     admin.add_view(SecureModelView(NewsletterSubscriber, db.session))
     admin.add_view(SecureModelView(AdminUser, db.session))
     return admin
